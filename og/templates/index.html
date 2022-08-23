@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+{% if user.is_authenticated %}
+    {{user.username}}님 안녕하세요
+        <a href = "{% url 'accounts:logout' %}"><button class = "btn btn-primary">로그아웃</button></a>
+    {% if user.is_staff == True %}  
+        <a href = "{% url 'accounts:logout' %}"><button class = "btn btn-primary">관리자</button></a>
+    {% endif %}
+{% else %}
+	<a href = "{% url 'accounts:signup' %}"><button class = "btn btn-primary">회원가입</button></a>
+    <a href = "{% url 'accounts:login' %}"><button class = "btn btn-primary">로그인</button></a>
+{% endif %}
+{% endblock %}
