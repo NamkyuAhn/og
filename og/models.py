@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 
 class ArtistEntry(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=16)
     email = models.EmailField(verbose_name='email', max_length=255, unique=True)
     phone_number = models.CharField(max_length=13)
@@ -17,7 +17,7 @@ class ArtistEntry(models.Model):
         db_table = 'artist_entries'
 
 class Artist(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=16)
     email = models.EmailField(verbose_name='email', max_length=255, unique=True)
     phone_number = models.CharField(max_length=13)
@@ -29,7 +29,7 @@ class Artist(models.Model):
         db_table = 'artists'
 
 class Exhibition(models.Model):
-    artist_id = models.ForeignKey('og.Artist', on_delete=models.CASCADE)
+    artist = models.ForeignKey('og.Artist', on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
     starting_date = models.DateField(help_text="YYYY-MM-DD")
     ending_date = models.DateField(help_text="YYYY-MM-DD")
@@ -38,7 +38,7 @@ class Exhibition(models.Model):
         db_table = 'exhibitions'
 
 class Item(models.Model):
-    artist_id = models.ForeignKey('og.Artist', on_delete=models.CASCADE)
+    artist = models.ForeignKey('og.Artist', on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
     price = models.DecimalField(max_digits=20, decimal_places=2)
     size = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(500)])
@@ -47,7 +47,7 @@ class Item(models.Model):
         db_table = 'items'
 
 class ExhibitionItem(models.Model):
-    exhibition_id = models.ForeignKey('og.Exhibition', on_delete=models.CASCADE)
-    item_id = models.ForeignKey('og.item', on_delete=models.CASCADE)
+    exhibition = models.ForeignKey('og.Exhibition', on_delete=models.CASCADE)
+    item = models.ForeignKey('og.item', on_delete=models.CASCADE)
     class Meta:
         db_table = 'exhibition_items'
