@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db.models import Avg, Count, Q, Value, CharField, Func
@@ -14,13 +12,28 @@ class Round(Func):
     function = 'ROUND'
     template='%(function)s(%(expressions)s, 0)'
 
+def artist_list(request):
+	artists = Artist.objects.all().order_by('-created_at')
+	return render(request, 'artist_list.html', {'artists' : artists})
+
+def item_list(request):
+	items = Item.objects.all().select_related('artist')\
+		.annotate(
+			artist_name = Concat('artist__name', Value(''), output_field = CharField()),
+			int_price = Round(Avg('price')),
+		)\
+		.values('item_name', 'int_price', 'size', 'artist_name')\
+		.order_by('-created_at')
+	return render(request, 'item_list.html', {'items' : items})
+
 def main(request):
 	return render(request, 'index.html', {})
 
 def artist_entry(request):
 	if request.user.is_authenticated:
-		if ArtistEntry.objects.filter(user_id = request.user.id).exists():#중복 지원 X
-				messages.info(request, "이미 등록된 작가거나 작가 등록 심사중 입니다.")
+
+		if Artist.objects.filter(user_id = request.user.id).exists():
+				messages.info(request, "이미 등록된 작가입니다.")
 				return redirect('og:main')
 
 		if request.method == 'POST':
@@ -52,7 +65,7 @@ def artist_entry(request):
 
 		else: #GET일때
 			form = ArtistEntryForm()
-			return render(request, 'artist_entry.html', {'form' : form})
+			return render(request, 'artist/artist_entry.html', {'form' : form})
 
 	else: #로그인 안했을때
 		messages.warning(request, "로그인이 필요한 서비스입니다.")
@@ -77,7 +90,7 @@ def artist_menu(request):
 				exhibitions = Exhibition.objects.filter(artist_id = artist_id)
 			else:
 				exhibitions = False
-			return render(request, 'artist_menu.html', {'artist_info' : artist_info, 'items' : items, 'exhibitions' : exhibitions, 'phone_number' : artist_info[0].phone_number})
+			return render(request, 'artist/artist_menu.html', {'artist_info' : artist_info, 'items' : items, 'exhibitions' : exhibitions, 'phone_number' : artist_info[0].phone_number})
 
 		messages.info(request, "아직 작가에 등록하지 않으셨거나 작가 승인이 되지 않았습니다.")
 		return redirect ('og:main')
@@ -90,6 +103,7 @@ def item_entry(request):
 	if request.user.is_authenticated:
 		if request.method == 'POST':
 			form = ItemEntryForm(request.POST)
+
 			if form.is_valid():
 				artist_id = Artist.objects.get(user_id = request.user.id).id
 				item = Item(
@@ -108,7 +122,7 @@ def item_entry(request):
 
 		else: #GET일때
 			form = ItemEntryForm()
-			return render(request, 'item_entry.html', {'form' : form})
+			return render(request, 'artist/item_entry.html', {'form' : form})
 
 	else: #로그인 안했을때
 		messages.warning(request, "로그인 창으로 이동합니다.")
@@ -116,12 +130,10 @@ def item_entry(request):
 
 def exhibition_entry(request):
 	if request.user.is_authenticated:
-
 		if request.method == 'POST':
 			artist_id = Artist.objects.get(user_id = request.user.id).id
 			exhibition_form = ExhibitionEntryForm(request.POST)
-			selected = request.POST.getlist('answers[]')
-			print(selected)
+			selected = request.POST.getlist('answers')
 
 			if exhibition_form.is_valid():
 				artist_id = Artist.objects.get(user_id = request.user.id).id
@@ -153,7 +165,7 @@ def exhibition_entry(request):
 				.annotate(
 				int_price = Round(Avg('price')),
 			)
-			return render(request, 'exhibition_entry.html', {'exhibition_form' : exhibition_form, 'items' : items})
+			return render(request, 'artist/exhibition_entry.html', {'exhibition_form' : exhibition_form, 'items' : items})
 
 	else: #로그인 안했을때
 		messages.warning(request, "로그인 창으로 이동합니다.")
@@ -168,7 +180,7 @@ def artist_stat(request):
 			)\
 			.values('name', 'avg_price', 'total_item')\
 			.order_by('created_at')
-		return render(request, 'artist_stat.html', {'artists' : artists})
+		return render(request, 'admin/artist_stat.html', {'artists' : artists})
 
 	else:
 		messages.warning(request, "관리자 계정만 접근이 가능합니다.")
@@ -176,22 +188,42 @@ def artist_stat(request):
 
 def admin_menu(request):
 	if request.user.is_staff:
-		return render(request, 'admin_menu.html')
+		if request.method == 'POST':
+			approved_list = request.POST.getlist('approve')
+			rejected_list = request.POST.getlist('reject')
+
+			for artist_entry_id in approved_list:#승인 작가 처리
+				if artist_entry_id in rejected_list:#승인 반려 둘다 누른경우 예외
+					messages.warning(request,'승인 또는 반려 하나만 체크해 주세요.')
+					return redirect('og:admin_menu')
+
+				approved_artist = ArtistEntry.objects.filter(id = artist_entry_id)
+				approved_artist.update(
+					is_checked = True,
+					is_approved = True
+				)
+				Artist.objects.create(
+					name = approved_artist[0].name,
+					email = approved_artist[0].email,
+					phone_number = approved_artist[0].phone_number,
+					birth_date = approved_artist[0].birth_date,
+					gender = approved_artist[0].gender,
+					user_id = approved_artist[0].user_id
+				)
+
+			for artist_entry_id in rejected_list:#반려 작가 처리
+				rejected_artist = ArtistEntry.objects.filter(id = artist_entry_id)
+				rejected_artist.update(
+					is_checked = True,
+					is_approved = False
+				)
+			messages.info(request, "승인/반려 처리가 완료되었습니다.")
+			return redirect('og:admin_menu')
+		else:
+			artist_entries = ArtistEntry.objects.all()
+			return render(request, 'admin/admin_menu.html', {'artist_entries' : artist_entries})
 
 	else:
 		messages.warning(request, "관리자 계정만 접근이 가능합니다.")
 		return redirect('og:main')
-		
-def artist_list(request):
-	artists = Artist.objects.all().order_by('-created_at')
-	return render(request, 'artist_list.html', {'artists' : artists})
 
-def item_list(request):
-	items = Item.objects.all().select_related('artist')\
-		.annotate(
-			artist_name = Concat('artist__name', Value(''), output_field = CharField()),
-			int_price = Round(Avg('price')),
-		)\
-		.values('item_name', 'int_price', 'size', 'artist_name')\
-		.order_by('-created_at')
-	return render(request, 'item_list.html', {'items' : items})

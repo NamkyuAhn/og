@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+{% load humanize %}
+{% csrf_token %}
+<a href = "{% url 'og:admin_menu' %}"><button class = "btn btn-primary">관리자 메뉴</button></a><br><br>
+
+<table border="1" style="margin: auto;">
+    <th>이름</th><th>100호 이하 작품수</th><th>평균가격</th>
+    {% for artist in artists %}
+        <tr>
+        <td>{{ artist.name }}</td>
+        {% if artist.total_item >= 1 %}
+            <td>{{ artist.total_item}}</td>
+        {% else %}
+            <td>100호 이하 작품 없음</td>
+        {% endif %}
+
+        {% if artist.avg_price >= 1 %}
+            <td>{{ artist.avg_price|intcomma }}</td>
+        {% else %}
+            <td>작품 없음</td>
+        {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

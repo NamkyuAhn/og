@@ -9,9 +9,9 @@
         <th>이름</th><th>생년월일</th><th>이메일 주소</th>
     
         {% for artist in artists %}
-        <tr>
-        <td>{{ artist.name }}</td><td>{{ artist.birth_date }}</td><td>{{ artist.email }}</td>
-        </tr>
+            <tr>
+            <td>{{ artist.name }}</td><td>{{ artist.birth_date }}</td><td>{{ artist.email }}</td>
+            </tr>
         {% endfor %}
     </table>
 
