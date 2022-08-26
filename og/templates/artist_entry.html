@@ -1,21 +1,15 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% block content %}
+
+<a href = "{% url 'og:main' %}"><button class = "btn btn-primary">첫화면</button></a><br>
+
 <div class="wrapper">
-    <div style="text-align: center;">
         <h1>작가 등록</h1>
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" class="btn btn-primary" value="작가 등록하기">
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
         </form>
-    </div>
 </div>
 {% endblock %}

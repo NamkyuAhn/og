@@ -1,7 +1,56 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% block content %}
-<a href = "{% url 'accounts:logout' %}"><button class = "btn btn-primary">작품 등록하기</button></a>
-<a href = "{% url 'accounts:logout' %}"><button class = "btn btn-primary">전시 등록하기</button></a>
+<a href = "{% url 'og:item_entry' %}"><button class = "btn btn-primary">작품 등록하기</button></a>
+<a href = "{% url 'og:exhibition_entry' %}"><button class = "btn btn-primary">전시 등록하기</button></a>
 <a href = "{% url 'og:main' %}"><button class = "btn btn-primary">시작 페이지</button></a>
+
+<br>
+<p>
+<h3>나의 정보</h3>
+{% for artist in artist_info %}
+이름 : {{ artist.name }}<br>
+성별 : {{ artist.gender }}<br>
+생년월일 : {{ artist.birth_date }}<br>
+이메일 : {{ artist.email }}<br> 
+{% endfor %}
+연락처 : {{ phone_number }} <!-- 알 수 없는 원인때문에 artist.phone_number가 빈 값으로 출력되어 따로 전달받음-->
+</p>
+
+<p>
+{% load humanize %}
+<h3>나의 작품(최신 등록순)</h3>
+{% if items == False %}
+    아직 작품이 없습니다. 작품을 등록해 보세요.
+
+{% else %}
+<table border="1" style="margin: auto;">
+    <th>제목</th><th>가격</th><th>호수</th>
+
+    {% for item in items %}
+    <tr>
+    <td>{{ item.item_name }}</td> <td>{{ item.int_price|intcomma }}</td> <td>{{ item.size }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+</p>
+
+<p>
+<h3>나의 전시(최신 등록순)</h3>
+{% if exhibitions == False %}
+    아직 전시가 없습니다. 전시를 등록해 보세요.
+
+{% else %}
+<table border="1" style="margin: auto;">
+    <th>제목</th><th>시작 날짜</th><th>종료 날짜</th>
+
+    {% for exhibition in exhibitions %}
+    <tr>
+    <td>{{ exhibition.exhibition_name }}</td> <td>{{ exhibition.starting_date }}</td> <td>{{ exhibition.ending_date }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+</p>
 {% endblock %}
