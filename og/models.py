@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class ArtistEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=16)
-    email = models.EmailField(verbose_name='email', max_length=255, unique=True)
+    email = models.EmailField(verbose_name='email', max_length=255)
     phone_number = models.CharField(max_length=13)
     birth_date = models.DateField(help_text="YYYY-MM-DD")
     gender = models.CharField(max_length=4)
