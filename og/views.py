@@ -6,7 +6,7 @@ from django.db.models import Avg, Count, Q, Value, CharField, Func
 from django.db.models.functions import Concat
 
 from .models import Artist, ArtistEntry, Item, Exhibition, ExhibitionItem
-from .forms import ArtistEntryForm, ItemEntryForm, ExhibitionEntryForm, ItemForExhibitionForm
+from .forms import ArtistEntryForm, ItemEntryForm, ExhibitionEntryForm
 
 from validator import phone_number_validate
 
@@ -77,11 +77,11 @@ def artist_menu(request):
 				exhibitions = Exhibition.objects.filter(artist_id = artist_id)
 			else:
 				exhibitions = False
-			print(artist_info[0].phone_number)
 			return render(request, 'artist_menu.html', {'artist_info' : artist_info, 'items' : items, 'exhibitions' : exhibitions, 'phone_number' : artist_info[0].phone_number})
 
 		messages.info(request, "아직 작가에 등록하지 않으셨거나 작가 승인이 되지 않았습니다.")
 		return redirect ('og:main')
+
 	else:
 		messages.warning(request, "로그인이 필요한 서비스입니다.")
 		return redirect ('accounts:login')
@@ -120,10 +120,10 @@ def exhibition_entry(request):
 		if request.method == 'POST':
 			artist_id = Artist.objects.get(user_id = request.user.id).id
 			exhibition_form = ExhibitionEntryForm(request.POST)
-			item_form = ItemForExhibitionForm(request.POST.getlist('item_name'), artist_id = artist_id)
-			print(item_form.data)
+			selected = request.POST.getlist('answers[]')
+			print(selected)
 
-			if exhibition_form.is_valid() and item_form.is_valid():
+			if exhibition_form.is_valid():
 				artist_id = Artist.objects.get(user_id = request.user.id).id
 				exhibition = Exhibition(
 					exhibition_name = exhibition_form.data['exhibition_name'],
@@ -132,7 +132,8 @@ def exhibition_entry(request):
 					artist_id = artist_id
 				)
 				exhibition.save()
-				for item_id in item_form.data['item_name']:
+
+				for item_id in selected:
 					exhibition_item = ExhibitionItem(
 						exhibition_id = exhibition.id,
 						item_id = item_id
@@ -148,8 +149,11 @@ def exhibition_entry(request):
 		else: #GET일때
 			exhibition_form = ExhibitionEntryForm()
 			artist_id = Artist.objects.get(user_id = request.user.id).id
-			item_form = ItemForExhibitionForm(artist_id = artist_id)
-			return render(request, 'exhibition_entry.html', {'exhibition_form' : exhibition_form, 'item_form' : item_form})
+			items = Item.objects.filter(artist_id = artist_id)\
+				.annotate(
+				int_price = Round(Avg('price')),
+			)
+			return render(request, 'exhibition_entry.html', {'exhibition_form' : exhibition_form, 'items' : items})
 
 	else: #로그인 안했을때
 		messages.warning(request, "로그인 창으로 이동합니다.")

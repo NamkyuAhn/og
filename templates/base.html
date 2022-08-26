@@ -2,8 +2,8 @@
 <html>
 <head>
     {% include 'head.html' %}
-    {% load static %}
-        <link rel="stylesheet" href="{% static "css/base.css" %}">
+    <!-- {% load static %}
+        <link rel="stylesheet" href="{% static "css/base.css" %}"> -->
 </head>
 
 <body>
@@ -18,16 +18,18 @@
                 </div>
             {% endfor %}
         {% endif %}
-<h1>오픈 갤러리 홈페이지</h1>
+
+<h1>오픈 갤러리</h1>
     {% if user.is_authenticated %}
-        {{user.username}}님 안녕하세요<br>
-        {{user.id}}유저 번호<br>
+        {{user.username}}님 안녕하세요
         <a href = "{% url 'accounts:logout' %}"><button class = "btn btn-primary">로그아웃</button></a>
+
     {% else %}<!-- 로그인 안했을때 -->
         <a href = "{% url 'accounts:signup' %}"><button class = "btn btn-primary">회원가입</button></a>
         <a href = "{% url 'accounts:login' %}"><button class = "btn btn-primary">로그인</button></a>
     {% endif %}
     <br><br>
+
 {% block content %}
 
 {% endblock %}
