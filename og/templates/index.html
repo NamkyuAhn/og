@@ -2,29 +2,14 @@
 {% load bootstrap4 %}
 {% block content %}
 
-{% if user.is_authenticated %}
-    {{user.username}}님 안녕하세요<br>
-    {{user.id}}유저 번호<br>
-    <a href = "{% url 'accounts:logout' %}"><button class = "btn btn-primary">로그아웃</button></a>
-
-    {% if user.is_staff == True %}  
-        <a href = "{% url 'accounts:logout' %}"><button class = "btn btn-primary">관리자 메뉴</button></a>
-    {% else %}
-        <a href = "{% url 'og:artist_entry' %}"><button class = "btn btn-primary">작가등록하기</button></a>
-        <a href = "{% url 'og:artist_menu' %}"><button class = "btn btn-primary">작가 메뉴</button></a>
-    {% endif %}
-
-{% else %}<!-- 로그인 안했을때 -->
-	<a href = "{% url 'accounts:signup' %}"><button class = "btn btn-primary">회원가입</button></a>
-    <a href = "{% url 'accounts:login' %}"><button class = "btn btn-primary">로그인</button></a>
+{% if user.is_staff == True %}  
+    <a href = "{% url 'og:admin_menu' %}"><button class = "btn btn-primary">관리자 메뉴</button></a>
+{% else %}
+    <a href = "{% url 'og:artist_entry' %}"><button class = "btn btn-primary">작가등록하기</button></a>
+    <a href = "{% url 'og:artist_menu' %}"><button class = "btn btn-primary">작가 메뉴</button></a>
 {% endif %}
 
-{% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-{% endif %}
+<a href = "{% url 'og:artist_list' %}"><button class = "btn btn-primary">작가 조회</button></a>
+<a href = "{% url 'og:item_list' %}"><button class = "btn btn-primary">작품 조회</button></a>
 
 {% endblock %}

@@ -28,23 +28,25 @@ class Artist(models.Model):
     class Meta:
         db_table = 'artists'
 
+class Item(models.Model):
+    artist = models.ForeignKey('og.Artist', on_delete=models.CASCADE)
+    item_name = models.CharField(max_length=64)
+    price = models.DecimalField(max_digits=20, decimal_places=2)
+    size = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(500)])
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'items'
+
 class Exhibition(models.Model):
     artist = models.ForeignKey('og.Artist', on_delete=models.CASCADE)
-    name = models.CharField(max_length=64)
+    exhibition_name = models.CharField(max_length=64)
     starting_date = models.DateField(help_text="YYYY-MM-DD")
     ending_date = models.DateField(help_text="YYYY-MM-DD")
+    exhibition_item = models.ManyToManyField('og.Exhibition', through='og.ExhibitionItem', related_name='ex_item')
 
     class Meta:
         db_table = 'exhibitions'
-
-class Item(models.Model):
-    artist = models.ForeignKey('og.Artist', on_delete=models.CASCADE)
-    name = models.CharField(max_length=64)
-    price = models.DecimalField(max_digits=20, decimal_places=2)
-    size = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(500)])
-    exhibition_item = models.ManyToManyField('og.Exhibition', through='og.ExhibitionItem', related_name='ex_item')
-    class Meta:
-        db_table = 'items'
 
 class ExhibitionItem(models.Model):
     exhibition = models.ForeignKey('og.Exhibition', on_delete=models.CASCADE)

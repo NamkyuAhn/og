@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+<a href = "{% url 'og:main' %}"><button class = "btn btn-primary">첫화면</button></a><br>
+<p>
+    <h3>작가 리스트</h3>
+    <table border="1" style="margin: auto;">
+        <th>이름</th><th>생년월일</th><th>이메일 주소</th>
+    
+        {% for artist in artists %}
+        <tr>
+        <td>{{ artist.name }}</td><td>{{ artist.birth_date }}</td><td>{{ artist.email }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    </p>
+{% endblock %}

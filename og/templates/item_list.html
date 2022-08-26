@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+
+<a href = "{% url 'og:main' %}"><button class = "btn btn-primary">첫화면</button></a><br> 
+<p>
+    {% load humanize %}
+    <h3>작품 리스트</h3>
+    <table border="1" style="margin: auto;">
+        <th>이름</th><th>호수</th><th>가격</th><th>작가 이름</th>
+    
+        {% for item in items %}
+        <tr>
+        <td>{{ item.item_name }}</td> <td>{{ item.size }}</td> <td>{{ item.int_price|intcomma }}</td> <td>{{ item.artist_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    </p>
+{% endblock %}
