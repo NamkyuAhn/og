@@ -40,17 +40,16 @@
 <h3>나의 전시(최신 등록순)</h3>
 {% if exhibitions == False %}
     아직 전시가 없습니다. 전시를 등록해 보세요.
-
 {% else %}
 <table border="1" style="margin: auto;">
     <th>제목</th><th>시작 날짜</th><th>종료 날짜</th>
-
     {% for exhibition in exhibitions %}
-    <tr>
-    <td>{{ exhibition.exhibition_name }}</td> <td>{{ exhibition.starting_date }}</td> <td>{{ exhibition.ending_date }}</td>
-    </tr>
+        <tr>
+        <td>{{ exhibition.exhibition_name }}</td> <td>{{ exhibition.starting_date }}</td> <td>{{ exhibition.ending_date }}</td>
+        </tr>
     {% endfor %}
 </table>
 {% endif %}
 </p>
+
 {% endblock %}

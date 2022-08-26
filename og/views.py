@@ -32,8 +32,8 @@ def main(request):
 def artist_entry(request):
 	if request.user.is_authenticated:
 
-		if Artist.objects.filter(user_id = request.user.id).exists():
-				messages.info(request, "이미 등록된 작가입니다.")
+		if Artist.objects.filter(user_id = request.user.id).exists() or ArtistEntry.objects.filter(user_id = request.user.id, is_checked = False):
+				messages.info(request, "이미 등록된 작가거나 심사중인 작가입니다.")
 				return redirect('og:main')
 
 		if request.method == 'POST':
@@ -197,7 +197,7 @@ def admin_menu(request):
 					messages.warning(request,'승인 또는 반려 하나만 체크해 주세요.')
 					return redirect('og:admin_menu')
 
-				approved_artist = ArtistEntry.objects.filter(id = artist_entry_id)
+				approved_artist = ArtistEntry.objects.filter(id = artist_entry_id, is_checked = False)
 				approved_artist.update(
 					is_checked = True,
 					is_approved = True
@@ -212,7 +212,7 @@ def admin_menu(request):
 				)
 
 			for artist_entry_id in rejected_list:#반려 작가 처리
-				rejected_artist = ArtistEntry.objects.filter(id = artist_entry_id)
+				rejected_artist = ArtistEntry.objects.filter(id = artist_entry_id, is_checked = False)
 				rejected_artist.update(
 					is_checked = True,
 					is_approved = False
