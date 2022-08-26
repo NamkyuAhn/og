@@ -27,12 +27,6 @@ class ExhibitionEntryForm(forms.ModelForm):
             "ending_date" : "종료 날짜"
         }
 
-class ItemForExhibitionForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        self.artist_id = kwargs.pop('artist_id')
-        super(ItemForExhibitionForm, self).__init__(*args, **kwargs)
-        queryset = Item.objects.filter(artist_id = self.artist_id).values_list('item_name')
-        self.fields['item_name'] = forms.ModelChoiceField(queryset=queryset, widget=forms.CheckboxSelectMultiple(), label = '작품 이름')
         
 
 

@@ -1,13 +1,28 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% block content %}
+{% load humanize %}
+
 <div class="wrapper">
-        <h1>전시 등록</h1> 
-        <form method="POST">
-            {% csrf_token %}
-            {{ exhibition_form.as_p }}
-            {{ item_form.as_p }}
-            <input type="submit" class="btn btn-primary" value="admit">
-        </form>
+<h3>전시 등록</h3> 
+    <form method="POST">
+        {% csrf_token %}
+        {{ exhibition_form.as_p }}
+    
+
+    <table border="1" style="margin: auto;">
+        <th>선택</th><th>제목</th><th>가격</th><th>호수</th>
+        
+        {% for item in items %}
+        <tr>
+        <td><input id type="checkbox" name="answers[]" value="{{ item.id }}"></td>
+        <td>{{ item.item_name }}</td> <td>{{ item.int_price|intcomma }}</td> <td>{{ item.size }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+    <br><input type="submit" class="btn btn-primary" value="전시 등록">
+    </form>
 </div>
+
 {% endblock %}
