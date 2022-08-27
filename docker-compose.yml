@@ -1,0 +1,28 @@
+# docker-compose.yml
+version: "2"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: web
+    command: gunicorn opengallery.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./static:/usr/src/app/staticfiles
+    expose:
+      - "8000"
+    depends_on:
+      - db
+  db:
+    image: mariadb:latest
+    container_name: mysql
+    expose:
+      - "3306"
+    environment:
+      MYSQL_DATABASE: og
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 9950
+      MYSQL_ROOT_PASSWORD: 9950
+    volumes:
+      - ../db/data:/var/lib/mysql
+      - ../db/data/conf.d:/etc/mysql/conf.d

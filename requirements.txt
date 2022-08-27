@@ -2,7 +2,6 @@ asgiref==3.5.2
 astroid==2.11.7
 backports.zoneinfo==0.2.1
 beautifulsoup4==4.11.1
-certifi @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_884c889c-96af-444f-bd6d-daddb5e9a462ykj3l5n_/croots/recipe/certifi_1655968814730/work/certifi
 dill==0.3.5.1
 Django==4.1
 django-bootstrap4==22.2
