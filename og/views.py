@@ -43,7 +43,7 @@ def artist_entry(request):
 				if phone_number_validate(form.data['phone_number']):#전화번호 형식 검사
 					messages.info(request, "전화번호 형식을 000-0000-0000 과 같이 입력하세요.")
 					return redirect('og:artist_entry')
-
+				
 				artist_entry = ArtistEntry(
 					name = form.data['username'],
 					email = form.data['email'],
