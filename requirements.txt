@@ -1,23 +1,6 @@
-asgiref==3.5.2
-astroid==2.11.7
-backports.zoneinfo==0.2.1
-beautifulsoup4==4.11.1
-certifi @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_884c889c-96af-444f-bd6d-daddb5e9a462ykj3l5n_/croots/recipe/certifi_1655968814730/work/certifi
-dill==0.3.5.1
 Django==4.1
 django-bootstrap4==22.2
 django-cors-headers==3.13.0
 gunicorn==20.1.0
-isort==5.10.1
-lazy-object-proxy==1.7.1
-mccabe==0.7.0
 mysqlclient==2.1.1
-platformdirs==2.5.2
-pylint==2.14.5
 PyMySQL==1.0.2
-soupsieve==2.3.2.post1
-sqlparse==0.4.2
-tomli==2.0.1
-tomlkit==0.11.4
-typing_extensions==4.3.0
-wrapt==1.14.1
