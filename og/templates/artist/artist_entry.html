@@ -8,7 +8,12 @@
         <h1>작가 등록</h1>
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form.username }}<br>
+            {{ form.gender }}<br>
+            {{ form.birth_date }}<br>
+            'YYYY-MM-DD 형식으로 입력'
+            {{ form.email }}<br>
+            {{ form.phone_number }}<br>
             <input type="submit" class="btn btn-primary" value="작가 등록하기">
         </form>
 </div>

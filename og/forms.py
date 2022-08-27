@@ -9,7 +9,7 @@ class ArtistEntryForm(forms.Form):
 
     username = forms.CharField(label = '이름(16자 이하)', max_length = 16, required = True)
     gender = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect, label = '성별', required = True)
-    birth_date = forms.DateField(label = '생년월일', required = True, help_text="YYYY-MM-DD 형식으로 입력")
+    birth_date = forms.DateField(label = '생년월일', required = True)
     email = forms.EmailField(label = '이메일', required = True)
     phone_number = forms.CharField(label = '전화번호(하이픈 포함)', max_length=13, required = True)
 
