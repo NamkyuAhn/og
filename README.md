@@ -9,7 +9,7 @@
 
 # 사용기술
 
-- Django, MySQL
+- Django(front-end, back-end), MySQL
 - 배포 : AWS(EC2, RDS), Nginx, Docker
 
 # 구현사항
