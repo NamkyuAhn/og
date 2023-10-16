@@ -3,7 +3,7 @@ import pymysql
 
 from django.contrib import messages
 from pathlib import Path
-from my_settings import SECRET_KEY, DATABASES_RDS
+from my_settings import SECRET_KEY, DATABASES
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +24,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
     'bootstrap4',
     'og',
     'accounts',
@@ -70,7 +69,7 @@ WSGI_APPLICATION = 'opengallery.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = DATABASES_RDS
+DATABASES = DATABASES
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
